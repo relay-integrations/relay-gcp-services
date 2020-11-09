@@ -1,0 +1,53 @@
+apiVersion: integration/v1
+kind: Step
+name: enable
+version: 1
+summary: Enable a GCP service
+
+description: |
+  This step enables a GCP service in the specified project
+
+build:
+  apiVersion: build/v1
+  kind: Docker
+
+publish:
+  repository: relaysh/gcp-services
+
+examples:
+- summary: Enable gcp service
+  apiVersion: v1
+  kind: Workflow
+  steps:
+    image: relaysh/gcp-services-step-enable
+    spec:
+      google: !Connection { type: gcp, name: my-gcp-account }
+      account: "workflow@project-8675309.iam.gserviceaccount.com"
+      services:
+      - cloudscheduler.googleapis.com
+      - bigquerydatatransfer.googleapis.com
+
+schemas:
+  spec:
+    $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    properties:
+      google:
+        type: object,
+        x-relay-connectionType: gcp,
+        description: A Relay Google Cloud Platform (GCP) connection to use,
+          properties:
+            serviceAccountKey:
+              type: string
+          required:
+          - serviceAccountKey
+      account:
+        type: string
+        description: The account email address to identify as, if any
+      services:
+        type:
+        - string
+        - array
+        items:
+          type: string
+        description: The service(s) which should be enabled on the account.
