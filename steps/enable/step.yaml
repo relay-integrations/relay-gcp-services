@@ -23,6 +23,7 @@ examples:
     spec:
       google: !Connection { type: gcp, name: my-gcp-account }
       account: "workflow@project-8675309.iam.gserviceaccount.com"
+      project: "project-8675309"
       services:
       - cloudscheduler.googleapis.com
       - bigquerydatatransfer.googleapis.com
@@ -31,6 +32,10 @@ schemas:
   spec:
     $schema: http://json-schema.org/draft-07/schema#
     type: object
+    required:
+    - google
+    - project
+    - services
     properties:
       google:
         type: object,
@@ -44,6 +49,9 @@ schemas:
       account:
         type: string
         description: The account email address to identify as, if any
+      project:
+        type: string
+        description: The project on which to enable the services
       services:
         type:
         - string

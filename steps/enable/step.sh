@@ -38,7 +38,13 @@ declare -a AUTH_ARGS
 
 ACCOUNT="$( $NI get -p '{ .account }' )"
 [ -n "${ACCOUNT}" ] && AUTH_ARGS+=( "${ACCOUNT}" )
+
 AUTH_ARGS+=( "--key-file=${WORKDIR}/creds/credentials.json" )
+
+PROJECT="$( $NI get -p '{ .account }' )"
+[ -z "${PROJECT}" ] && usage "spec: specify \`project\`"
+
+AUTH_ARGS+=( "--project=${PROJECT}" )
 $GCLOUD auth activate-service-account "${AUTH_ARGS[*]}"
 
 declare -a SERVICES
