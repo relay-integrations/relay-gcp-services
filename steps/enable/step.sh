@@ -41,7 +41,7 @@ ACCOUNT="$( $NI get -p '{ .account }' )"
 
 AUTH_ARGS+=( "--key-file=${WORKDIR}/creds/credentials.json" )
 
-PROJECT="$( $NI get -p '{ .account }' )"
+PROJECT="$( $NI get -p '{ .project }' )"
 [ -z "${PROJECT}" ] && usage "spec: specify \`project\`"
 
 AUTH_ARGS+=( "--project=${PROJECT}" )
