@@ -43,12 +43,12 @@ AUTH_ARGS+=( "--key-file=${WORKDIR}/creds/credentials.json" )
 
 PROJECT="$( $NI get -p '{ .project }' )"
 [ -z "${PROJECT}" ] && usage "spec: specify \`project\`"
-
 AUTH_ARGS+=( "--project=${PROJECT}" )
-$GCLOUD auth activate-service-account "${AUTH_ARGS[*]}"
+
+$GCLOUD auth activate-service-account "${AUTH_ARGS[@]}"
 
 declare -a SERVICES
 SERVICES=( $( $NI get | $JQ -r 'try .services // empty | @sh' ) )
 [[ ${#SERVICES[@]} -eq 0 ]] && usage "spec: specify \`services\`"
 
-$GCLOUD services enable "${SERVICES[*]}"
+$GCLOUD services enable "${SERVICES[@]}"
