@@ -8,6 +8,7 @@ set -euo pipefail
 GCLOUD="${GCLOUD:-gcloud}"
 JQ="${JQ:-jq}"
 NI="${NI:-ni}"
+RM_F="${RM_F:-rm -f}"
 
 #
 # Variables
@@ -29,26 +30,36 @@ usage() {
   exit 1
 }
 
+#
+# Setup
+#
+
 # This reads google.serviceAccountInfo and creates /workspace/creds/credentials.json
 $NI gcp config -d "${WORKDIR}/creds"
 
-[ -f "${WORKDIR}/creds/credentials.json" ] || usage "spec: Unable to find credentials"
-
-declare -a AUTH_ARGS
-
-ACCOUNT="$( $NI get -p '{ .account }' )"
-[ -n "${ACCOUNT}" ] && AUTH_ARGS+=( "${ACCOUNT}" )
-
-AUTH_ARGS+=( "--key-file=${WORKDIR}/creds/credentials.json" )
+[ -f "${WORKDIR}/creds/credentials.json" ] || usage "spec: specify a gcp connection as \`google: \!Connection ...\` in your spec"
 
 PROJECT="$( $NI get -p '{ .project }' )"
-[ -z "${PROJECT}" ] && usage "spec: specify \`project\`"
-AUTH_ARGS+=( "--project=${PROJECT}" )
+[ -z "${PROJECT}" ] && PROJECT="$(jq -r .project_id "${WORKDIR}/creds/credentials.json")"
+$GCLOUD config set project "${PROJECT}"
 
-$GCLOUD auth activate-service-account "${AUTH_ARGS[@]}"
+ACCOUNT="$( $NI get -p '{ .account }' )"
+[ -n "${ACCOUNT}" ] && $GCLOUD config set account "${ACCOUNT}"
+
+$GCLOUD config set core/disable_usage_reporting true
+$GCLOUD config set component_manager/disable_update_check true
+
+$GCLOUD auth activate-service-account --key-file="${WORKDIR}/creds/credentials.json"
+
+$RM_F "${WORKDIR}/creds/credentials.json"
+
+#
+# Main
+#
 
 declare -a SERVICES
 SERVICES=( $( $NI get | $JQ -r 'try .services // empty | @sh' ) )
-[[ ${#SERVICES[@]} -eq 0 ]] && usage "spec: specify \`services\`"
+[[ ${#SERVICES[@]} -eq 0 ]] && usage "spec: specify \`services\`, the list of services to enable"
 
 $GCLOUD services enable "${SERVICES[@]}"
+

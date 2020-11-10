@@ -34,7 +34,6 @@ schemas:
     type: object
     required:
     - google
-    - project
     - services
     properties:
       google:

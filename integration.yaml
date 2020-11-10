@@ -1,15 +1,15 @@
 apiVersion: integration/v1
 kind: Integration
-name: template
+name: gcp-services
 channel: stable
 version: v20200514
-summary: Integration template
+summary: Google Cloud Platform BigQuery
 license: Apache-2.0
-homepage: https://github.com/relay-integrations/template
-source: https://github.com/relay-integrations/template
+homepage: https://github.com/relay-integrations/relay-gcp-services
+source: https://github.com/relay-integrations/relay-gcp-services
 
 description: |
-  This is a template for creating a Relay Integration repository.
+  Google Cloud Platform services give you options for computing and hosting.
 
 owner:
   name: Puppet, Inc.
@@ -17,5 +17,5 @@ owner:
   url: https://puppet.com
 
 tags:
-- template
+- gcp
 - relay integration
