@@ -37,20 +37,26 @@ schemas:
     - services
     properties:
       google:
-        type: object,
-        x-relay-connectionType: gcp,
-        description: A Relay Google Cloud Platform (GCP) connection to use,
-          properties:
-            serviceAccountKey:
-              type: string
-          required:
-          - serviceAccountKey
+        type: object
+        description: Information about authenticating to GCP
+        properties:
+          connection:
+            type: object
+            x-relay-connectionType: gcp
+            description: A Relay Google Cloud Platform (GCP) connection to use
+            properties:
+              serviceAccountKey:
+                type: string
+            required:
+            - serviceAccountKey
+          project:
+            type: string
+            description: The target GCP project, if different from the connection's project_id
+        required:
+        - connection
       account:
         type: string
         description: The account email address to identify as, if any
-      project:
-        type: string
-        description: The project on which to enable the services
       services:
         type:
         - string

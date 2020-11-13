@@ -37,9 +37,9 @@ usage() {
 # This reads google.serviceAccountInfo and creates /workspace/creds/credentials.json
 $NI gcp config -d "${WORKDIR}/creds"
 
-[ -f "${WORKDIR}/creds/credentials.json" ] || usage "spec: specify a gcp connection as \`google: \!Connection ...\` in your spec"
+[ -f "${WORKDIR}/creds/credentials.json" ] || usage "spec: specify a gcp connection as \`google: connection: \!Connection ...\` in your spec"
 
-PROJECT="$( $NI get -p '{ .project }' )"
+PROJECT="$( $NI get -p '{ .google.project }' )"
 [ -z "${PROJECT}" ] && PROJECT="$(jq -r .project_id "${WORKDIR}/creds/credentials.json")"
 $GCLOUD config set project "${PROJECT}"
 
