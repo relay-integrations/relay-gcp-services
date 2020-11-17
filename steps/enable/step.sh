@@ -62,6 +62,6 @@ SERVICES=( $( $NI get | $JQ -r 'try .services // empty | @sh' ) )
 [[ ${#SERVICES[@]} -eq 0 ]] && usage "spec: specify \`services\`, the list of services to enable"
 
 for SERVICE in "${SERVICES[@]}" ; do
-  $GCLOUD services enable $SERVICE
+  $GCLOUD services enable $(eval echo $SERVICE)
 done
 
